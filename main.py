@@ -1,3 +1,4 @@
+import tkinter
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -32,13 +33,13 @@ def image_path():
     select_button.configure(image=logo_image)
 
     # enter file file in the entry box
-    entry.delete(0, 'end')
-    entry.insert(0, file_path)
+    path_entry.delete(0, 'end')
+    path_entry.insert(0, file_path)
 
 
 def water_mark():
     global logo_image
-    img = Image.open(entry.get())
+    img = Image.open(path_entry.get())
     # determine the size of the image
     img_width, img_height = img.size
     # img = img.rotate(45)
@@ -65,7 +66,7 @@ def water_mark():
     for left in range(0, img_width, text_width):
         for top in range(0, img_height, text_height):
             # Draw the watermark on the image
-            draw.text((left, top), text, font=font, fill=(255, 255, 128))
+            draw.text((left, top), text, font=font, fill=(255, 255, 255))
 
     # creating new image after adding water mark to the mage
     logo_image = ImageTk.PhotoImage(image=img)
@@ -76,20 +77,13 @@ def water_mark():
 
 
 def save():
-    file = entry.get()
+    file = path_entry.get()
     file_name, ext = os.path.splitext(file)
 
     # call water_mark function to get host of the water_marked img
     updated_img = water_mark()
     # save the img in the same dir with the originalname__watermarked
     updated_img.save(f"{file_name}_watermarked{ext}", format="png")
-    files = [("Image files", "*.png*"),
-             ("Jpeg files", "*.jpg*"),
-             ('All Files', '*.*'),
-             ('Python Files', '*.py'),
-             ('Text Document', '*.txt')]
-
-    file = filedialog.asksaveasfilename(filetype=files, defaultextension=files)
 
 
 # ---------------------------------------------- Setup UI ------------------------------------------------
@@ -103,11 +97,6 @@ window.resizable(width=True, height=True)
 
 # initial image
 logo_image = tk.PhotoImage(file="logo.png")
-# new_image = tk.PhotoImage(select_image())
-
-
-# canvas = tkinter.Canvas(width=600, height=400)
-# canvas.pack()
 
 
 # creating label
@@ -119,18 +108,18 @@ select_button = tk.Button(window, text="SELECT IMAGES", image=logo_image, comman
 select_button.pack()
 
 text_label = ttk.Label(text="Enter Text")
-text_label.pack(padx=5)
+text_label.pack(padx=5, pady=10)
 text_entry = tk.Text(height=2, width=25)
-text_entry.pack(pady=20)
+text_entry.pack()
 
 update_button = tk.Button(window, text="UPDATE", command=water_mark)
-update_button.pack(pady=10)
+update_button.pack(side=tkinter.LEFT, expand=True)
 
 save_button = tk.Button(window, text="SAVE", command=save)
-save_button.pack(pady=10)
+save_button.pack(side=tkinter.RIGHT, expand=True)
 
-entry = ttk.Entry(width=100)
-entry.pack(side='bottom', pady=15)
+# Getting the path when the user browse for images
+path_entry = ttk.Entry(width=100)
 
 
 window.mainloop()
